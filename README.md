@@ -9,7 +9,7 @@
 - [♿ Recursos de Acessibilidade](#-recursos-de-acessibilidade)
 - [🎮 Jogos Interativos (7 Jogos)](#-jogos-interativos-7-jogos)
 - [🛠️ Tecnologias Utilizadas](#️-tecnologias-utilizadas)
-- [🛠️ Grupo](#️-grupo)
+- [💪 Grupo](#-grupo)
 
 ---
 
@@ -86,6 +86,7 @@ Abaixo estão descritos os 7 jogos educativos disponíveis na plataforma, cada u
 - **Design:** Responsivo, otimizado para Desktop, Tablet e Mobile.
 
 ## 💪 Grupo
+
 ### Cassio Silva 
 - **LINKEDIN**: [https://www.linkedin.com/in/cassio-silva-846a8337b/](https://www.linkedin.com/in/cassio-silva-846a8337b/])
 ### Anthonio Cesar 
