@@ -85,7 +85,7 @@ Abaixo estão descritos os 7 jogos educativos disponíveis na plataforma, cada u
   - *Web Speech API* (Síntese e Reconhecimento de Voz)
 - **Design:** Responsivo, otimizado para Desktop, Tablet e Mobile.
 
-## 💪 Grupos 
+## 💪 Grupo
 ### Cassio Silva 
 - **LINKEDIN**: [https://www.linkedin.com/in/cassio-silva-846a8337b/](https://www.linkedin.com/in/cassio-silva-846a8337b/])
 ### Anthonio Cesar 
