@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizzaria Express - Acessível (Atualiza do)</title>
+    <link rel="stylesheet" href="css/pizzaria.css">
+</head>
+<body>
+
+    <div id="reading-guide"></div>
+
+    <header>
+        <h1>🍕 Pizzaria Express <span style="font-weight:400; color: var(--text-muted); font-size: 0.8em;">| Manager</span></h1>
+        <div class="hud">
+            <div class="hud-item" id="hud-dia">Dia: 1</div>
+            <div class="hud-item" id="hud-rank">Rank: 1</div>
+            <div class="hud-item" id="hud-orcamento">Orçamento: $1500.00</div>
+            <div class="hud-item" id="hud-satisfacao">Satisfação: 100%</div>
+            <div class="hud-item" id="hud-preco">Preço Pizza: $50</div>
+        </div>
+    </header>
+    
+    <main class="container">
+        <aside class="painel-lateral">
+            <div class="card">
+                <h3>📈 Gestão</h3>
+                <p style="display:flex; justify-content:space-between;"><span>XP:</span> <strong id="stat-score">0</strong></p>
+                <p style="display:flex; justify-content:space-between;"><span>Despesas:</span> <strong id="stat-despesas">$0.00</strong></p>
+                <div style="margin-top: 15px; border-top: 1px solid var(--border); padding-top: 15px;">
+                    <div style="font-size:14px; color:var(--text-muted); display:flex; justify-content:space-between; align-items:center;">
+                        <span>Preço fixo da Pizza</span>
+                        <strong id="display-preco">$50</strong>
+                    </div>
+                    <div style="font-size:12px; color:var(--text-muted); margin-top:8px;">Preço fixo — não editável durante o jogo.</div>
+                </div>
+                <button id="btn-upgrade-forno" class="btn" style="margin-top: 20px; width: 100%;">Upgrade Forno ($1000)</button>
+            </div>
+            <div class="card">
+                <h3>📦 Estoque</h3>
+                <div id="estoque-list"></div>
+            </div>
+             <div class="card">
+                <h3>🔔 Eventos</h3>
+                <div id="logs" style="max-height:18vh;overflow:auto;padding:10px;background:var(--surface-alt);border-radius:6px; font-size: 12px; color: var(--text-muted); border: 1px solid var(--border);"></div>
+            </div>
+        </aside>
+
+        <section class="painel-producao">
+            <div id="fila-pedidos" class="area-trabalho" data-area="fila"><h3>Fila de Pedidos</h3></div>
+            <div id="area-preparo" class="area-trabalho" data-area="preparo"><h3>Mesa de Preparo</h3></div>
+            <div id="forno" class="area-trabalho" data-area="forno"><h3>Forno (<span id="tempo-forno">10s</span>)</h3></div>
+            <div id="area-entrega" class="area-trabalho" data-area="entrega"><h3>Entrega</h3></div>
+        </section>
+    </main>
+
+    <div id="modal-preparo" class="modal-overlay">
+        <div class="modal-conteudo">
+            <h3 id="modal-titulo-pedido" style="margin-top:0; border-bottom:1px solid var(--border); padding-bottom:10px;">Montagem</h3>
+            
+            <div style="margin-top: 15px; font-size: 14px; color: var(--text-muted);">Pedido do Cliente:</div>
+            <div id="modal-receita" style="background: var(--surface-alt); padding: 10px; border-radius: 8px; margin: 5px 0; font-size: 14px; border: 1px solid var(--border);"></div>
+            
+            <div style="margin-top: 15px; font-size: 14px; color: var(--text-muted);">Sua Montagem Atual:</div>
+            <div id="modal-montagem-atual" style="min-height: 40px; margin-bottom: 10px; font-size: 14px;"></div>
+
+            <div style="font-weight: 600; font-size: 14px; margin-top: 20px;">Ingredientes Disponíveis (custo por compra):</div>
+            <div id="modal-ingredientes" class="modal-ingredientes"></div>
+            
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px;">
+                <button id="modal-btn-cancelar" class="btn small" style="background: #fff; border: 1px solid var(--border); color: var(--text-main);">Cancelar</button>
+                <button id="modal-btn-confirmar" class="btn small" style="background: var(--accent);">Confirmar Preparo</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="acc-widget">
+        <div class="acc-menu" id="accMenu">
+            <div class="acc-header">
+                Acessibilidade
+                <button onclick="toggleAccMenu()" style="background:none; border:none; cursor:pointer; font-size:18px;">✖</button>
+            </div>
+            
+            <div class="acc-group open">
+                <div class="acc-group-title" onclick="toggleGroup(this)">👁️ Visual <span>▼</span></div>
+                <div class="acc-group-content">
+                    <div class="acc-option">
+                        <label>Leitor de Tela (TTS Hover)
+                            <span class="acc-desc">Lê em voz alta o texto sob o mouse.</span>
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="acc-tts" onchange="toggleTTS(this)">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="acc-option">
+                        <label>Alto Contraste
+                            <span class="acc-desc">Fundo preto, texto branco e cores vivas.</span>
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="acc-contrast" onchange="toggleContrast()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="acc-option">
+                        <label>Fonte Ampliada
+                            <span class="acc-desc">Aumenta o tamanho de todo o texto.</span>
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="acc-font" onchange="toggleFont()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="acc-option">
+                        <label>Cursor Grande
+                            <span class="acc-desc">Aumenta o ponteiro do mouse.</span>
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="acc-cursor" onchange="toggleCursor()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="acc-group">
+                <div class="acc-group-title" onclick="toggleGroup(this)">👂 Auditiva <span>▼</span></div>
+                <div class="acc-group-content">
+                    <div class="acc-option">
+                        <label>Alertas Visuais (Flash)
+                            <span class="acc-desc">Pisca a tela quando algo acontece.</span>
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="acc-flash">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                     <div class="acc-option">
+                        <label>Transcrições de Log
+                            <span class="acc-desc">Destaca área de eventos textuais.</span>
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="acc-logs" onchange="highlightLogs()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="acc-group">
+                <div class="acc-group-title" onclick="toggleGroup(this)">🖐️ Motora <span>▼</span></div>
+                <div class="acc-group-content">
+                    <div class="acc-option">
+                        <label>Áreas de Clique Amplas
+                            <span class="acc-desc">Botões maiores e mais espaçados.</span>
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="acc-click" onchange="toggleClickArea()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="acc-option">
+                        <label>Tempo de Resposta
+                            <span class="acc-desc">Reduz velocidade do jogo (slow-motion).</span>
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="acc-slow" onchange="toggleSlowMode()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="acc-group">
+                <div class="acc-group-title" onclick="toggleGroup(this)">🧠 Cognitiva <span>▼</span></div>
+                <div class="acc-group-content">
+                    <div class="acc-option">
+                        <label>Parar Animações
+                            <span class="acc-desc">Remove movimentos que distraem.</span>
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="acc-anim" onchange="toggleAnimation()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="acc-option">
+                        <label>Guia de Leitura
+                            <span class="acc-desc">Linha horizontal para foco.</span>
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="acc-guide" onchange="toggleGuide()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="acc-fab" onclick="toggleAccMenu()" aria-label="Menu de Acessibilidade">
+            ♿
+        </button>
+    </div>
+
+    <script src="js/game.js"></script>
+</body>
+</html>

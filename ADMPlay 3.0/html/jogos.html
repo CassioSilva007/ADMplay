@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AdmPlay — Seleção de Missão</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../style/style.css">
+</head>
+
+<body>
+
+  <div id="stage"></div>
+
+  <header class="games-header">
+    <div class="brand-home">
+        <img src="../img/ilha.png" alt="Logo" class="logo-img-small">
+        <h1 class="title">MAPA DE OPERAÇÕES</h1>
+    </div>
+    <a href="index.html" class="btn-back">
+        <span>← Voltar ao Menu</span>
+    </a>
+  </header>
+
+  <main class="games-container">
+    
+    <div class="islands-grid">
+      
+      <a href="../tutoriais/tutorial-estoque.html" class="island-node" style="--delay: 0s">
+        <div class="hologram-base"></div> <div class="visual-wrapper">
+            <img src="../img/ilha.png" alt="Ilha de Estoque">
+            <span class="difficulty-tag easy">FÁCIL</span>
+        </div>
+        <h3 class="island-name">ESTOQUE</h3>
+        <div class="connection-line"></div> </a>
+
+      <a href="../tutoriais/tutorial-caminhao.html" class="island-node" style="--delay: 1s">
+        <div class="hologram-base"></div>
+        <div class="visual-wrapper">
+            <img src="../img/ilha.png" alt="Ilha de Logística">
+            <span class="difficulty-tag easy">FÁCIL</span>
+        </div>
+        <h3 class="island-name">LOGÍSTICA</h3>
+        <div class="connection-line"></div>
+      </a>
+
+      <a href="../jogo da memoria/minigames.html" class="island-node" style="--delay: 2s">
+        <div class="hologram-base"></div>
+        <div class="visual-wrapper">
+            <img src="../img/ilha.png" alt="Ilha da Memória">
+            <span class="difficulty-tag medium">MÉDIO</span>
+        </div>
+        <h3 class="island-name">MEMÓRIA</h3>
+        <div class="connection-line"></div>
+      </a>
+
+      <a href="../kehoot/kahoot.html" class="island-node" style="--delay: 0.5s">
+        <div class="hologram-base"></div>
+        <div class="visual-wrapper">
+            <img src="../img/ilha.png" alt="Ilha do Conhecimento">
+            <span class="difficulty-tag medium">MÉDIO</span>
+        </div>
+        <h3 class="island-name">QUIZ</h3>
+        <div class="connection-line"></div>
+      </a>
+
+      <a href="../tutoriais/tutorial-pizzaria.html" class="island-node" style="--delay: 1.5s">
+        <div class="hologram-base"></div>
+        <div class="visual-wrapper">
+            <img src="../img/ilha.png" alt="Ilha da Produção">
+            <span class="difficulty-tag hard">DIFÍCIL</span>
+        </div>
+        <h3 class="island-name">PRODUÇÃO</h3>
+        <div class="connection-line"></div>
+      </a>
+
+      <a href="../tutoriais/tutorial-equipe.html" class="island-node" style="--delay: 2.5s">
+        <div class="hologram-base"></div>
+        <div class="visual-wrapper">
+            <img src="../img/ilha.png" alt="Ilha de RH">
+            <span class="difficulty-tag hard">DIFÍCIL</span>
+        </div>
+        <h3 class="island-name">EQUIPE</h3>
+        <div class="connection-line"></div>
+      </a>
+
+    </div>
+  </main>
+
+  <div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper>
+      <div class="vw-plugin-top-wrapper"></div>
+    </div>
+  </div>
+
+    <div id="access-widget">
+    <button id="access-btn" aria-label="Abrir Menu de Acessibilidade">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M12 2C13.1 2 14 2.9 14 4S13.1 6 12 6 10 2.9 10 4 10.9 2 12 2M21 9H15V22H13V16H11V22H9V9H3V7H21V9Z"/></svg>
+    </button>
+    <div id="access-panel" class="hidden">
+        <div class="access-header"><h3>Acessibilidade</h3><button id="close-access">✕</button></div>
+        <div class="access-body">
+            <div class="access-slider-group"><div class="slider-header"><span class="label">Tamanho</span><span id="font-size-val">100%</span></div><div class="range-wrapper"><span class="small-a">A</span><input type="range" id="font-slider" min="100" max="160" value="100" step="5"><span class="big-a">A</span></div></div>
+            <div class="access-grid">
+                <button onclick="toggleAccess('high-contrast')"><span class="icon">🌗</span><span class="label">Contraste</span></button>
+                <button onclick="toggleAccess('grayscale')"><span class="icon">👁️</span><span class="label">P&B</span></button>
+                <button onclick="toggleAccess('invert')"><span class="icon">🔄</span><span class="label">Inverter</span></button>
+                <button onclick="toggleAccess('readable-font')"><span class="icon">Aa</span><span class="label">Legível</span></button>
+                <button onclick="toggleAccess('stop-animations')"><span class="icon">⏸</span><span class="label">Pausar</span></button>
+                <button onclick="toggleAccess('big-cursor')"><span class="icon">👆</span><span class="label">Cursor</span></button>
+            </div>
+        </div>
+        <div class="access-footer"><button id="reset-access">Resetar</button></div>
+    </div>
+  </div>
+
+  <div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div>
+  </div>
+
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>
+    new window.VLibras.Widget("https://vlibras.gov.br/app");
+  </script>
+
+  <script src="../js/script.js"></script>
+</body>
+</html>

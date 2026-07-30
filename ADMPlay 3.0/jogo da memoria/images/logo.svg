@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="200" viewBox="0 0 600 200">
+  <!-- SVG com fundo TRANSPARENTE para ser usado como logo sem fundo -->
+  <g>
+    <text x="50%" y="45%" font-family="'Press Start 2P', monospace" font-size="28" fill="#fdd72d" dominant-baseline="middle" text-anchor="middle">LOGO DO GRUPO</text>
+    <text x="50%" y="70%" font-family="'Press Start 2P', monospace" font-size="10" fill="#fdd72d" dominant-baseline="middle" text-anchor="middle">substitua por images/logo.png ou .svg</text>
+  </g>
+</svg>

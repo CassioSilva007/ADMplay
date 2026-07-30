@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gerente de Equipe Remota (O Jogo de RH)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../style/style.css">
+  <style>
+    /* APENAS AS CORES FORAM MUDADAS PARA UM TEMA RETRÔ/TERMINAL */
+    :root {
+      --cor-primaria: #000000;
+      /* Preto - Fundo Principal */
+      --cor-secundaria: white;
+      /* Verde Neon - Destaque, Borda, Linha */
+      --cor-foco: #00ff37;
+      /* Ciano/Azul Claro - Barra de Foco */
+      --cor-estresse: #ff0000;
+      /* Vermelho - Barra de Estresse */
+      --cor-fundo: #000000;
+      /* Preto - Fundo do Body */
+    }
+
+    body {
+      font-family: "Press Start 2P", monospace;
+      width: 100%;
+      height: 100vh;
+      background-size: 100% 150%;
+      font-family: Arial, sans-serif;
+      background-color: var(--cor-fundo);
+      /* Cor alterada */
+      color: var(--cor-secundaria);
+      /* Cor alterada */
+      margin: 0;
+      padding: 0;
+      letter-spacing: 0.5px;
+      background-image: url(fundo.jpg);
+      background-repeat: no-repeat;
+      overflow: hidden;
+      font-family: "Press Start 2P", monospace;
+      position: relative;
+      font-size: 15pt;
+    }
+
+    body::before {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.678);
+      /* Cor alterada */
+      z-index: -1;
+    }
+
+    #botao-avancar-turno {
+      background-color: var(--cor-secundaria);
+      /* Cor alterada */
+      color: #000000;
+      /* Cor alterada */
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    #botao-avancar-turno:hover {
+      background-color: #00ffaa;
+      /* Cor alterada */
+    }
+
+    /* Layout Principal com Grid */
+    .container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 30px;
+      padding: 30px 50px;
+      width: 100%;
+      height: 100vh;
+      background-color: rgba(30, 30, 30, 0.54);
+      /* Cor alterada */
+      font-size: 10pt;
+    }
+
+    .botoes {
+      grid-area: botoes;
+      width: 100%;
+      height: 100px;
+      text-align: center;
+
+      button {
+        width: 100%;
+        font-size: 10pt;
+        margin-top: 10px;
+        font-family: "Press Start 2P", monospace;
+      }
+    }
+
+    th {
+      color: #ffff00;
+      /* Cor alterada (Amarelo Neon) */
+    }
+
+    .painel-equipe {
+      width: 55%;
+      height: 100%;
+    }
+
+    .painel-projetos {
+      padding: 30px;
+      width: 35%;
+      height: 80%;
+      border: 2px dotted var(--cor-secundaria);
+      position: relative;
+      /* Para posicionar a mensagem de Fim de Jogo */
+    }
+
+    /* Estilização da Tabela de Equipe */
+    #tabela-equipe {
+      border-spacing: 0px 20px;
+      height: 95%;
+    }
+
+    #tabela-equipe td {
+      padding: 15px;
+      text-align: center;
+      width: 1500px;
+      color: var(--cor-secundaria);
+      /* Cor alterada */
+      border-top: 2px solid var(--cor-secundaria);
+      /* Cor alterada */
+      border-bottom: 2px solid var(--cor-secundaria);
+      /* Cor alterada */
+    }
+
+    #tabela-equipe td:nth-child(1) {
+      img {
+        width: 225px;
+        height: 150px;
+      }
+    }
+
+    #tabela-equipe td:nth-child(3) {
+      text-align: left;
+    }
+
+    /* Estilização da Coluna de Ações */
+    #tabela-equipe td:nth-child(5) {
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .barra-progresso {
+      border-radius: 5px;
+      overflow: hidden;
+      height: 20px;
+      width: 100px;
+      margin: 5px 0;
+      border: 1px solid var(--cor-secundaria);
+      /* Cor alterada */
+      margin-top: 20px;
+    }
+
+    .progresso-foco {
+      height: 100%;
+      background-color: var(--cor-foco);
+      /* Cor alterada */
+      transition: width 0.5s;
+    }
+
+    .progresso-estresse {
+      height: 100%;
+      background-color: var(--cor-estresse);
+      /* Cor alterada */
+      transition: width 0.5s;
+    }
+
+    /* Cards de Projeto */
+    .card-projeto {
+      border: 1px solid var(--cor-secundaria);
+      /* Cor alterada */
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      background-color: #1a1a1a;
+      /* Cor alterada */
+    }
+
+    .card-projeto h3 {
+      color: #ffff00;
+      /* Cor alterada (Amarelo Neon) */
+      font-size: 10pt;
+    }
+
+    .card-projeto p {
+      margin: 5px 0;
+      color: var(--cor-secundaria);
+      /* Cor alterada */
+    }
+
+    .feedback-projeto {
+      margin-top: 20px;
+      padding: 10px;
+      border: 2px dashed var(--cor-secundaria);
+      /* Cor alterada */
+      min-height: 50px;
+      text-align: center;
+    }
+
+    .btn-acao {
+      background-color: #222222;
+      color: var(--cor-secundaria);
+      border: none;
+      padding: 5px 10px;
+      margin: 2px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+      font-size: 20pt;
+      box-shadow: 0px 0px 5px rgb(251, 255, 0);
+      margin: 5px 0px;
+    }
+
+    .btn-acao:hover {
+      background-color: #00ffaa;
+      /* Cor alterada (Ciano para hover) */
+    }
+
+    .btn-acao:disabled {
+      background-color: #444444;
+      /* Cinza mais escuro para desabilitado */
+      color: #888888;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+
+    h2 {
+      color: white;
+      /* Cor alterada */
+      text-align: center;
+      background-color: transparent;
+      /* Cor alterada */
+      padding: 10px;
+      border: 5px dotted #ffff00;
+      /* Cor alterada */
+      font-size: 20pt;
+      border-radius: 10px;
+    }
+
+    header {
+      position: absolute;
+      top: 30px;
+      width: 100%;
+      font-size: 1.5em;
+      color: #ffff00;
+      margin-left: 890px;
+      /* Cor alterada */
+    }
+
+    .status-geral {
+      margin: 20px 0px;
+      text-align: center;
+    }
+
+    select.select-alocacao {
+      -webkit-appearance: none;
+      appearance: none;
+      background-color: transparent;
+      color: white;
+      border-color: #ffff00;
+      padding: 20px;
+      border-radius: 10px 10px 0px 0px;
+      font-size: 10pt;
+
+      option {
+        color: black;
+      }
+
+      option:checked {
+        background-color: var(--cor-foco);
+      }
+    }
+
+    /* NOVO: Estilo para as imagens dos avatares */
+    .avatar-icon {
+      width: 60px;
+      /* Tamanho ajustado para a tabela */
+      height: auto;
+      image-rendering: pixelated;
+      /* Garante que pareça pixel art, se o navegador tentar suavizar */
+      margin: 0 auto;
+      /* Centraliza */
+      display: block;
+    }
+
+    div.txt {
+      font-family: Arial, Helvetica, sans-serif;
+      text-align: justify;
+      margin-left: 40px;
+      margin-top: 10px;
+      font-size: 13pt;
+    }
+
+    small {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 12pt;
+      margin-top: 5px;
+      font-weight: 400;
+    }
+
+    /* ESTILO PARA A MENSAGEM FINAL (AGORA GLOBAL) */
+    #mensagem-final {
+      position: fixed;
+      /* Fixa na tela */
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.95);
+      display: none;
+      /* Inicia oculto */
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #ffff00;
+      text-align: center;
+      z-index: 999;
+      /* Garante que fique acima de tudo */
+      font-size: 20pt;
+      padding: 20px;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #mensagem-final h2 {
+      font-size: 24pt;
+      color: #00ff37;
+      border: none;
+      padding-bottom: 20px;
+    }
+
+    #mensagem-final p {
+      margin: 100px;
+    }
+
+    #mensagem-final button {
+      margin: 15px;
+      padding: 10px 20px;
+      font-family: "Press Start 2P", monospace;
+      font-size: 12pt;
+      cursor: pointer;
+      background-color: #ffff00;
+      color: #000000;
+      border: 2px solid #000000;
+    }
+    @media (max-width: 992px) {
+            body {
+                overflow-y: auto; 
+                height: auto;
+                font-size: 10pt;
+            }
+
+            header {
+                position: static;
+                margin-top: 10px;
+                margin-left: 0;
+                transform: none;
+                padding: 10px;
+                font-size: 1.2em;
+                text-align: center;
+            }
+            
+            /* Empilhamento Vertical */
+            .container {
+                flex-direction: column;
+                padding: 10px;
+                height: auto;
+                gap: 15px;
+                width: 100%;
+            }
+
+            .painel-equipe, .painel-projetos {
+                width: 98%;
+                height: auto;
+                padding: 10px;
+            }
+            /* Tabela Responsiva (Transforma linhas em blocos) */
+            #tabela-equipe {
+                display: block;
+                overflow-x: auto; 
+                white-space: normal;
+                border-spacing: 0;
+                width: 100%;
+            }
+            
+            #tabela-equipe tr {
+                display: flex;
+                flex-wrap: wrap;
+                margin-bottom: 15px;
+                border: 2px solid var(--cor-secundaria);
+                padding: 5px;
+            }
+            
+            #tabela-equipe td {
+                display: block;
+                width: 100%;
+                text-align: left !important;
+                padding: 5px 10px;
+                font-size: 1.5rem;
+                border: none;
+                border-bottom: 1px dotted rgba(255, 255, 255, 0.5);
+                box-sizing: border-box;
+                white-space: normal;
+            }
+            .btn-acao{
+              font-size: 2rem;
+            }
+            #tabela-equipe thead {
+                display: none;
+            }
+            
+            /* Ajusta a coluna de status e barras de progresso */
+            #tabela-equipe td:nth-child(3) {
+                order: 3;
+            }
+            
+            /* Ajusta a coluna de ações e o select */
+            #tabela-equipe td:nth-child(5) {
+                order: 5; 
+                text-align: center !important;
+                padding-top: 10px;
+            }
+
+            .btn-acao, select.select-alocacao {
+                margin: 5px auto;
+                max-width: 90%;
+                display: block;
+                width: 90%;
+                font-size: 10pt;
+            }
+
+            .barra-progresso {
+                width: 100%;
+                height: 30px;
+            }
+            
+            .status-geral {
+                flex-direction: column;
+                align-items: center;
+            }
+            .status-geral span {
+                margin: 5px 0;
+            }
+            
+            #tabela-equipe td:nth-child(1) img {
+                width:100%;
+                height:300px;
+            }
+
+            #tabela-equipe tr {
+                margin-bottom: 10px;
+            }
+          }
+    
+  </style>
+</head>
+
+<body>
+<a href="../html/jogos.html" class="btn-back">
+    <span>← Voltar ao Menu</span>
+  </a>
+  <div id="mensagem-final" style="display: none;">
+  </div>
+
+  <header>PROJECT SYN.REGY</header>
+  <main class="container">
+    <section class="painel-equipe">
+      <table id="tabela-equipe">
+        <thead>
+          <th>
+            <tr>
+              <th>NOME</th>
+              <th>SALÁRIO</th>
+              <th>STATUS</th>
+              <th>ALOCAÇÃO</th>
+              <th>AÇÕES</th>
+            </tr>
+          </th>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section class="painel-projetos">
+      <h2>Projetos Atuais</h2>
+      <div class="status-geral">
+        <span id="orcamento"></span>
+        <span id="semana-atual"></span>
+      </div>
+      <div id="lista-projetos"></div>
+      <div id="feedback-projeto" class="feedback-projeto"></div>
+      <section class="botoes">
+        <button id="botao-avancar-turno">Avançar Semana (Sexta-feira)</button>
+      </section>
+    </section>
+  </main>
+<div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper>
+      <div class="vw-plugin-top-wrapper"></div>
+    </div>
+  </div>
+
+    <div id="access-widget">
+    <button id="access-btn" aria-label="Abrir Menu de Acessibilidade">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M12 2C13.1 2 14 2.9 14 4S13.1 6 12 6 10 2.9 10 4 10.9 2 12 2M21 9H15V22H13V16H11V22H9V9H3V7H21V9Z"/></svg>
+    </button>
+    <div id="access-panel" class="hidden">
+        <div class="access-header"><h3>Acessibilidade</h3><button id="close-access">✕</button></div>
+        <div class="access-body">
+            <div class="access-slider-group"><div class="slider-header"><span class="label">Tamanho</span><span id="font-size-val">100%</span></div><div class="range-wrapper"><span class="small-a">A</span><input type="range" id="font-slider" min="100" max="160" value="100" step="5"><span class="big-a">A</span></div></div>
+            <div class="access-grid">
+                <button onclick="toggleAccess('high-contrast')"><span class="icon">🌗</span><span class="label">Contraste</span></button>
+                <button onclick="toggleAccess('grayscale')"><span class="icon">👁️</span><span class="label">P&B</span></button>
+                <button onclick="toggleAccess('invert')"><span class="icon">🔄</span><span class="label">Inverter</span></button>
+                <button onclick="toggleAccess('readable-font')"><span class="icon">Aa</span><span class="label">Legível</span></button>
+                <button onclick="toggleAccess('stop-animations')"><span class="icon">⏸</span><span class="label">Pausar</span></button>
+                <button onclick="toggleAccess('big-cursor')"><span class="icon">👆</span><span class="label">Cursor</span></button>
+            </div>
+        </div>
+        <div class="access-footer"><button id="reset-access">Resetar</button></div>
+    </div>
+  </div>
+
+  <div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div>
+  </div>
+
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>
+    new window.VLibras.Widget("https://vlibras.gov.br/app");
+  </script>
+
+  <script src="../js/script.js"></script>
+  <script>
+    function numaleatorio() {
+      const nummax = 85;
+      const valoraleatorio = Math.floor(Math.random() * nummax);
+      return valoraleatorio;
+    }
+
+    function estressealeatorio() {
+      const nummax = 50;
+      const valoraleatorio = Math.floor(Math.random() * nummax);
+      return valoraleatorio;
+    }
+
+    function treinoaleatorio() {
+      const nummax = 35;
+      const valoraleatorio = Math.floor(Math.random() * nummax);
+      return valoraleatorio;
+    }
+
+    const JOGO = {
+      semana: 1,
+      orcamento: 430000,
+      funcionarios: [{
+          id: 1,
+          nome: "Alice",
+          salario: 4000,
+          foco: numaleatorio(),
+          estresse: numaleatorio(),
+          alocado: null,
+          alocadoAnterior: null, // Campo para rodízio
+          avatar: "menina1.png",
+        },
+        {
+          id: 2,
+          nome: "Bruno",
+          salario: 4500,
+          foco: numaleatorio(),
+          estresse: numaleatorio(),
+          alocado: null,
+          alocadoAnterior: null, // Campo para rodízio
+          avatar: "homem1.png",
+        },
+        {
+          id: 3,
+          nome: "Carla",
+          salario: 5000,
+          foco: numaleatorio(),
+          estresse: numaleatorio(),
+          alocado: null,
+          alocadoAnterior: null, // Campo para rodízio
+          avatar: "menina2.png",
+        },
+        {
+          id: 4,
+          nome: "Leandro",
+          salario: 6000,
+          foco: numaleatorio(),
+          estresse: numaleatorio(),
+          alocado: null,
+          alocadoAnterior: null, // Campo para rodízio
+          avatar: "homem2.png",
+        },
+      ],
+      // ... (resto dos dados de projetos)
+      projetos: [{
+          id: 101,
+          nome: "App Móvel",
+          progresso: 0,
+          dificuldade: 150,
+          prazo: 12,
+          status: "Em andamento",
+        },
+        {
+          id: 102,
+          nome: "Site para a google",
+          progresso: 0,
+          dificuldade: 100,
+          prazo: 10,
+          status: "Em andamento",
+        },
+        {
+          id: 103,
+          nome: "Site para a Amazon",
+          progresso: 0,
+          dificuldade: 200,
+          prazo: 14,
+          status: "Em andamento",
+        },
+      ],
+    };
+
+    // --- 2. Elementos DOM (A Visão) ---
+    const DOM = {
+      semanaAtual: document.getElementById("semana-atual"),
+      orcamento: document.getElementById("orcamento"),
+      tabelaEquipeBody: document.querySelector("#tabela-equipe tbody"),
+      listaProjetos: document.getElementById("lista-projetos"),
+      botaoAvancarTurno: document.getElementById("botao-avancar-turno"),
+      feedback: document.getElementById("feedback-projeto"),
+      mensagemFinal: document.getElementById("mensagem-final"),
+    };
+
+    // --- 3. Funções de Atualização da Interface (DOM) ---
+
+    /** Atualiza os status gerais (Semana e Orçamento) no cabeçalho. */
+    function atualizarStatusGeral() {
+      DOM.semanaAtual.textContent = `Semana: ${JOGO.semana}`;
+      DOM.orcamento.textContent = `Orçamento: $${JOGO.orcamento.toLocaleString(
+        "pt-BR"
+      )}`;
+    }
+
+    /** Renderiza a tabela de funcionários com dados atualizados. */
+    function renderizarEquipe() {
+      DOM.tabelaEquipeBody.innerHTML = "";
+
+      // NOVO: Filtra para mostrar apenas projetos "Em andamento" no select
+      const projetosDisponiveis = JOGO.projetos.filter(p => p.status === "Em andamento");
+      
+      // Verifica quantos projetos ativos existem
+      const projetosAtivos = projetosDisponiveis; // Usamos a lista já filtrada
+      // Só precisa de rodízio se houver mais de um projeto em andamento
+      const isRodizioNecessario = projetosAtivos.length > 1;
+
+      JOGO.funcionarios.forEach((func) => {
+        // Checa se o foco do funcionário está no máximo
+        const focoNoMaximo = func.foco >= 100;
+
+        // Checa se o estresse do funcionário está no mínimo (0%)
+        const estresseNoMinimo = func.estresse <= 0;
+
+        // Mensagem de status para botões desabilitados
+        let statusMensagem = '';
+        if (focoNoMaximo && estresseNoMinimo) {
+          statusMensagem = 'Foco e Estresse controlados';
+        } else if (focoNoMaximo) {
+          statusMensagem = 'Foco em 100%.';
+        } else if (estresseNoMinimo) {
+          statusMensagem = 'Estresse em 0%.';
+        }
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td><img src="${func.avatar}" alt="${func.nome
+          }" class="avatar-icon">${func.nome}</td>
+            <td>$${func.salario}</td>
+            <td>
+              <div class="barra-progresso"><div class="progresso-foco" style="width: ${func.foco
+          }%;"></div></div>
+              <small>${func.foco}% de foco</small><br>
+              <div class="barra-progresso"><div class="progresso-estresse" style="width: ${func.estresse
+          }%;"></div></div>
+              <small>${func.estresse}% estresse</small>
+            </td>
+            <td>
+              <select data-id="${func.id}" class="select-alocacao">
+                  <option value="0" ${func.alocado === null ? "selected" : ""
+          } >Livre (Pausa)</option>
+                  ${projetosDisponiveis // USANDO APENAS PROJETOS EM ANDAMENTO
+            .map(
+              (p) => {
+                // A restrição só se aplica se houver mais de um projeto ativo
+                const isAlocadoNaSemanaAnterior =
+                  func.alocadoAnterior === p.id && isRodizioNecessario;
+
+                // Adiciona texto de restrição e desabilita a opção no select
+                const restritoText = isAlocadoNaSemanaAnterior
+                  ? " (RESTRITO: Rodízio obrigatório)"
+                  : "";
+                const disabledAttr = isAlocadoNaSemanaAnterior
+                  ? "disabled"
+                  : "";
+                return `
+                              <option value="${p.id}" ${func.alocado === p.id ? "selected" : ""
+                  } ${disabledAttr}>${p.nome}${restritoText}</option>
+                            `;
+              }
+            )
+            .join("")}
+              </select>
+            </td>
+            <td>
+              <button class="btn-acao" onclick="darPausa(${func.id
+          })" ${estresseNoMinimo ? 'disabled' : ''}>Pausa (-$2000)</button>
+              <br>
+              <button class="btn-acao" onclick="darTreinamento(${func.id
+          })" ${focoNoMaximo ? 'disabled' : ''}>Treinar (-$1000)</button>
+              
+              ${statusMensagem ? `<small style="display:block; color:#ffff00; margin-top: 5px;">${statusMensagem}</small>` : ''}
+            </td>
+          `;
+        DOM.tabelaEquipeBody.appendChild(tr);
+      });
+
+      // Adiciona o listener para a alocação (Select)
+      document.querySelectorAll(".select-alocacao").forEach((select) => {
+        select.addEventListener("change", (e) => {
+          const funcId = parseInt(e.target.dataset.id);
+          const projetoId = parseInt(e.target.value);
+          alocarFuncionario(funcId, projetoId);
+        });
+      });
+    }
+
+    /** Renderiza os cards de projeto. */
+    function renderizarProjetos() {
+      DOM.listaProjetos.innerHTML = JOGO.projetos
+        .filter((p) => p.status === "Em andamento") // Mostrar apenas ativos
+        .map((p) => {
+          const progressoPercent = Math.min(
+            100,
+            (p.progresso / p.dificuldade) * 100
+          ).toFixed(0);
+          const alocados =
+            JOGO.funcionarios
+            .filter((f) => f.alocado === p.id)
+            .map((f) => f.nome)
+            .join(", ") || "Ninguém alocado.";
+
+          // Cálculo da contagem regressiva
+          const semanasRestantes = p.prazo - JOGO.semana;
+          let prazoDisplay;
+          let prazoStyle = '';
+
+          if (semanasRestantes > 1) {
+            prazoDisplay = `${semanasRestantes} Semanas`;
+          } else if (semanasRestantes === 1) {
+            prazoDisplay = `1 Semana`;
+            prazoStyle = 'color: #ffff00;'; // Amarelo
+          } else if (semanasRestantes === 0) {
+            prazoDisplay = `ÚLTIMA SEMANA!`;
+            prazoStyle = 'color: #ff0000;'; // Vermelho
+          } else {
+            // Este caso só deve ser atingido se o projeto já deveria ter falhado.
+            prazoDisplay = `PRAZO EXPIRADO`;
+            prazoStyle = 'color: #ff0000;'; // Vermelho
+          }
+
+
+          return `
+                      <div class="card-projeto">
+                          <h3>${p.nome} (<span style="${prazoStyle}">Restam: ${prazoDisplay}</span>)</h3>
+                          <p>Progresso: ${progressoPercent}% (${p.progresso}/${p.dificuldade
+            })</p>
+                          <p>Equipe: <strong>${alocados}</strong></p>
+                      </div>
+                    `;
+        })
+        .join("");
+    }
+
+    // ------------------------------------------------------------------
+    // NOVO: CHECAGEM INSTANTÂNEA DE FIM DE JOGO
+    // ------------------------------------------------------------------
+    function checarFimDeJogoInstantaneo() {
+        if (JOGO.orcamento <= 0) {
+            // Se o orçamento zerou ou ficou negativo, exibe o fim de jogo
+            exibirFimDeJogo();
+            return true;
+        }
+        return false;
+    }
+
+    // --- 4. Funções de Ação do Jogador (Mecânicas de Jogo) ---
+
+    /** Aloca um funcionário a um projeto ou o deixa livre (pausa). */
+    function alocarFuncionario(funcId, projetoId) {
+      const func = JOGO.funcionarios.find((f) => f.id === funcId);
+      const projetoAnterior = func.alocadoAnterior;
+
+      // Verifica se o rodízio é necessário para a validação
+      const projetosAtivos = JOGO.projetos.filter(p => p.status === "Em andamento");
+      const isRodizioNecessario = projetosAtivos.length > 1;
+
+      if (func) {
+        // Verifica a restrição de rodízio: Só bloqueia se houver mais de um projeto ativo
+        if (isRodizioNecessario && projetoId !== 0 && projetoId === projetoAnterior) {
+          const projetoNome =
+            JOGO.projetos.find((p) => p.id === projetoId)?.nome ||
+            "Projeto anterior";
+
+          // 🛑 MENSAGEM DE ERRO VISÍVEL IMEDIATA
+          DOM.feedback.textContent = `🚫 ALERTA: ${func.nome} estava alocado em ${projetoNome} na semana passada. Rodízio obrigatório!`;
+
+          // Reverte a seleção do select para o valor atual (alocação válida anterior)
+          const selectElement = document.querySelector(
+            `.select-alocacao[data-id="${funcId}"]`
+          );
+          if (selectElement) {
+            // Se o funcionário já tinha uma alocação, volta para ela. Senão, volta para 'Livre' (0).
+            selectElement.value = func.alocado !== null ? func.alocado.toString() : "0";
+          }
+          return; // Impede a alocação
+        }
+
+        // Se a alocação for válida (novo projeto ou Livre)
+        func.alocado = projetoId > 0 ? projetoId : null;
+
+        // Feedback de sucesso
+        const alocacaoNome = projetoId > 0 ?
+          JOGO.projetos.find(p => p.id === projetoId)?.nome :
+          'Pausa';
+
+        DOM.feedback.textContent = `${func.nome} alocado para ${alocacaoNome}.`;
+
+        renderizarProjetos();
+      }
+    }
+
+    /** Reduz o Estresse de um funcionário (Ação Rápida). */
+    function darPausa(funcId) {
+      const custo = 2000;
+      const func = JOGO.funcionarios.find((f) => f.id === funcId);
+
+      // Restrição de Estresse Mínimo
+      if (func && func.estresse <= 0) {
+        DOM.feedback.textContent = `🚫 ALERTA: ${func.nome} já atingiu o Estresse mínimo (0%) e não precisa de pausa.`;
+        return;
+      }
+
+      if (JOGO.orcamento >= custo) {
+        if (func) {
+          JOGO.orcamento -= custo;
+          // Garante que o estresse nunca seja menor que 0
+          func.estresse = Math.max(0, func.estresse - estressealeatorio());
+          
+          // CHAMADA INSTANTÂNEA APÓS GASTO
+          if (checarFimDeJogoInstantaneo()) return; 
+
+          atualizarStatusGeral();
+          renderizarEquipe();
+          DOM.feedback.textContent = `${func.nome} teve um dia de folga e está menos estressado! (-$${custo})`;
+        }
+      } else {
+        DOM.feedback.textContent = `Orçamento insuficiente para dar pausa a ${func.nome}. Precisa de $${custo}.`;
+      }
+    }
+
+    /** Aumenta o Foco (Skill) do funcionário com custo (Upgrade). */
+    function darTreinamento(funcId) {
+      const custo = 1000;
+      const func = JOGO.funcionarios.find((f) => f.id === funcId);
+
+      // Restrição de Foco Máximo
+      if (func && func.foco >= 100) {
+        DOM.feedback.textContent = `🚫 ALERTA: ${func.nome} já atingiu o Foco máximo (100%) e não pode ser treinado.`;
+        return;
+      }
+
+      if (JOGO.orcamento >= custo) {
+        if (func) {
+          JOGO.orcamento -= custo;
+          func.foco = Math.min(100, func.foco + treinoaleatorio()); // Aumenta o foco/skill
+          
+          // CHAMADA INSTANTÂNEA APÓS GASTO
+          if (checarFimDeJogoInstantaneo()) return;
+
+          atualizarStatusGeral();
+          renderizarEquipe();
+          DOM.feedback.textContent = `${func.nome} recebeu um curso! Foco melhorado, custou $${custo}.`;
+        }
+      } else {
+        DOM.feedback.textContent = `Orçamento insuficiente para treinar ${func.nome}. Precisa de $${custo}.`;
+      }
+    }
+
+    /** Função que exibe a mensagem final do jogo. */
+    function exibirFimDeJogo() {
+      // Desabilitar todas as ações no painel principal
+      DOM.botaoAvancarTurno.disabled = true;
+      DOM.tabelaEquipeBody.querySelectorAll('select, button').forEach(el => el.disabled = true);
+      DOM.listaProjetos.style.display = 'none';
+      DOM.feedback.style.display = 'none';
+
+      const projetosConcluidos = JOGO.projetos.filter(p => p.status === "Concluído").length;
+      const projetosFalhos = JOGO.projetos.filter(p => p.status === "Falhou").length;
+
+      let resultadoMensagem = '';
+      let titulo = '';
+
+      // Verifica se o motivo do fim do jogo foi orçamento esgotado
+      if (JOGO.orcamento <= 0) {
+        titulo = "💸 FALÊNCIA TOTAL!";
+        resultadoMensagem = "Seu orçamento acabou! Sem dinheiro para pagar a equipe, sua empresa foi fechada imediatamente.";
+      } else if (projetosFalhos === 0 && projetosConcluidos > 0) {
+        titulo = "🏆 VITÓRIA! TODOS OS PROJETOS ENTREGUES!";
+        resultadoMensagem = "📝 Resumo Executivo: Equilíbrio e Produtividade. A saúde, competência e produtividade da equipe dependem de uma eficaz Alocação / Projeto de recursos humanos para cumprir o escopo e prazo. É crucial equilibrar o Foco e Estresse com o bem-estar da equipe através de Pausa / Treinamento (investimento em RH). Isso evita falhas, pois a Importância reside em ensinar a equilibrar a busca por resultados com a saúde da equipe.";
+      } else if (projetosConcluidos > 0) {
+        titulo = "✅ FIM DE JOGO! PROJETOS CONCLUÍDOS.";
+        resultadoMensagem = `Você concluiu ${projetosConcluidos} projetos. Infelizmente, ${projetosFalhos} projetos falharam ou perderam o prazo.`;
+
+      } else {
+        titulo = "⚠️ FIM DE JOGO. Todos os projetos falharam.";
+        resultadoMensagem = "Sua gestão resultou na falha de todos os projetos. Tente gerenciar melhor o estresse e o foco da equipe na próxima vez.";
+      }
+
+      const orcamentoFinalColor = JOGO.orcamento > 0 ? '#00ff37' : '#ff0000';
+
+      DOM.mensagemFinal.innerHTML = `
+            <h2>${titulo}</h2>
+            <p>${resultadoMensagem}</p>
+            <p>Orçamento final: <strong style="color: ${orcamentoFinalColor};">$${JOGO.orcamento.toLocaleString("pt-BR")}</strong></p>
+            
+            <button onclick="reiniciarJogo()">REINICIAR JOGO</button>
+            <button onclick="voltarParaPaginaInicial()">VOLTAR À PÁGINA INICIAL</button>
+        `;
+        
+      // Garantir que os status sejam atualizados antes de fechar a tela (importante se a falência for instantânea)
+      atualizarStatusGeral(); 
+      DOM.mensagemFinal.style.display = 'flex'; // Exibe a mensagem
+    }
+
+    /** Reinicia o jogo (Recarrega a página) */
+    function reiniciarJogo() {
+      window.location.reload();
+    }
+
+    /** Volta para a página inicial (Redireciona) */
+    function voltarParaPaginaInicial() {
+      // Assumimos que a "página inicial" é a página anterior.
+      window.location.href = '../html/jogos.html';
+    }
+
+
+    // --- 5. Lógica Central (Avanço de Turno/Semana) ---
+
+    /** Calcula o progresso, custos, e mudanças de status no final da semana. */
+    function calcularTurno() {
+      // Se a mensagem final estiver sendo exibida, não faça nada
+      if (DOM.mensagemFinal.style.display === 'flex') return;
+
+      let feedbackTurno = [];
+
+      // Verificar se o rodízio é necessário para a aplicação da penalidade
+      const projetosAtivos = JOGO.projetos.filter(p => p.status === "Em andamento");
+      const isRodizioNecessario = projetosAtivos.length > 1;
+
+      // 0. Armazenar a alocação ATUAL (que o jogador escolheu para esta semana)
+      const alocacoesDaSemanaAtual = new Map();
+      JOGO.funcionarios.forEach(func => {
+        // Guarda a alocação que será usada para gerar progresso nesta semana
+        alocacoesDaSemanaAtual.set(func.id, func.alocado);
+      });
+
+      // 1. Pagar Salários e Checar Falência
+      const custoSalarios = JOGO.funcionarios.reduce(
+        (total, func) => total + func.salario,
+        0
+      );
+      JOGO.orcamento -= custoSalarios;
+      feedbackTurno.push(
+        `Pagamos $${custoSalarios.toLocaleString(
+          "pt-BR"
+        )} em salários esta semana.`
+      );
+
+      // Checagem após pagamento de salários
+      if (checarFimDeJogoInstantaneo()) return;
+
+      // 2. Cálculo de Progresso e Status dos Funcionários
+      JOGO.funcionarios.forEach((func) => {
+        if (func.alocado) {
+          // Funcionário Alocado
+          const projeto = JOGO.projetos.find((p) => p.id === func.alocado);
+
+          // Checagem da Penalidade de Rodízio só ocorre se o rodízio for necessário
+          const isRodizioViolation = isRodizioNecessario && (func.alocado === func.alocadoAnterior);
+
+          if (projeto) {
+
+            if (!isRodizioViolation) {
+              // Progresso Gerado (SEM VIOLAÇÃO)
+              const efetividade = 1 - (func.estresse / 100) * 0.5; // 0.5 a 1.0
+              const progresso = Math.round((func.foco / 10) * efetividade);
+              projeto.progresso += progresso;
+
+              feedbackTurno.push(
+                `${func.nome} trabalhou em ${projeto.nome}, gerando ${progresso} progresso.`
+              );
+            } else {
+              // Penalidade: Não gera progresso (COM VIOLAÇÃO)
+              feedbackTurno.push(
+                `🚨 PENALIDADE DE RODÍZIO: ${func.nome} estava em ${projeto.nome} na semana passada e **não gerou progresso** esta semana.`
+              );
+            }
+
+            // Estresse e Cansaço (Penalidade) ainda ocorrem se estiver alocado
+            func.estresse = Math.min(
+              100,
+              func.estresse + estressealeatorio()
+            ); // Estresse aumenta trabalhando
+            func.foco = Math.max(10, func.foco - estressealeatorio()); // Foco diminui (cansaço)
+
+          }
+        } else {
+          // Funcionário Livre (Pausa): Reduz Estresse, Aumenta Foco
+          func.estresse = Math.max(0, func.estresse - estressealeatorio());
+          func.foco = Math.min(100, func.foco + treinoaleatorio());
+          feedbackTurno.push(
+            `${func.nome} tirou uma folga e está se recuperando.`
+          );
+        }
+      });
+
+      // 3. Checagem de Projetos
+      let todosProjetosTerminados = true;
+      JOGO.projetos.forEach((projeto) => {
+        if (projeto.status === "Em andamento") {
+          const progressoPercent =
+            (projeto.progresso / projeto.dificuldade) * 100;
+          if (progressoPercent >= 100) {
+            projeto.status = "Concluído";
+            const recompensa = projeto.dificuldade * 200; // Ex: $200 por ponto de dificuldade
+            JOGO.orcamento += recompensa;
+            feedbackTurno.push(
+              `🎉 PROJETO CONCLUÍDO: ${projeto.nome
+              }! Recompensa de $${recompensa.toLocaleString("pt-BR")}.`
+            );
+
+            // Remove alocação dos funcionários que estavam neste projeto
+            JOGO.funcionarios
+              .filter((f) => f.alocado === projeto.id)
+              .forEach((f) => (f.alocado = null));
+          } else if (JOGO.semana > projeto.prazo) {
+            // Condição para Falha (Prazo Esgotado)
+            projeto.status = "Falhou";
+            JOGO.orcamento -= 5000; // Penalidade
+            feedbackTurno.push(
+              `❌ PROJETO FALHOU: ${projeto.nome} perdeu o prazo! Penalidade de $5000.`
+            );
+            // Remove alocação
+            JOGO.funcionarios
+              .filter((f) => f.alocado === projeto.id)
+              .forEach((f) => (f.alocado = null));
+          } else {
+            // Se ainda houver projetos em andamento, o jogo continua
+            todosProjetosTerminados = false;
+          }
+        }
+      });
+
+      // Checagem após penalidades de projeto
+      if (checarFimDeJogoInstantaneo()) return;
+
+      // 4. Checagem de Fim de Jogo (Projetos)
+      if (todosProjetosTerminados) {
+        DOM.feedback.innerHTML = `**Relatório da Semana ${JOGO.semana}**:<br><div class="txt">${feedbackTurno.join("<br>")}</div>`;
+        atualizarStatusGeral();
+        exibirFimDeJogo();
+        return;
+      }
+
+
+      // 5. Concluir Turno e ATUALIZAR ALOCAÇÃO ANTERIOR
+      JOGO.semana++;
+
+      // A alocação que usamos nesta semana torna-se a alocação anterior para a PRÓXIMA semana.
+      JOGO.funcionarios.forEach(func => {
+        func.alocadoAnterior = alocacoesDaSemanaAtual.get(func.id);
+      });
+
+      DOM.feedback.innerHTML = `**Relatório da Semana ${JOGO.semana - 1
+        }**:<br><div class="txt">${feedbackTurno.join("<br>")}</div>`;
+
+      // 6. Atualizar Interface
+      atualizarStatusGeral();
+      renderizarEquipe();
+      renderizarProjetos();
+    }
+
+    // --- 6. Inicialização e Event Listeners ---
+
+    /** Função de inicialização do jogo */
+    function iniciarJogo() {
+      // Adiciona as funções de botão ao escopo global para que o onclick funcione
+      window.reiniciarJogo = reiniciarJogo;
+      window.voltarParaPaginaInicial = voltarParaPaginaInicial;
+      window.darPausa = darPausa;
+      window.darTreinamento = darTreinamento;
+
+      atualizarStatusGeral();
+      renderizarEquipe();
+      renderizarProjetos();
+
+      // Evento para avançar o turno/semana
+      DOM.botaoAvancarTurno.addEventListener("click", calcularTurno);
+    }
+
+    // Inicia o jogo quando a página carregar
+    iniciarJogo();
+  </script>
+</body>
+
+</html>

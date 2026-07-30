@@ -1,0 +1,41 @@
+div.tutorial {
+  margin: 50px;
+  display: flex;
+  align-items: center;
+  color: white;
+  div.txt-tutorial {
+    padding: 50px;
+    h1 {
+      font-family: var(--font-titulo);
+      text-align: center;
+      margin: 10px 0px;
+      font-size: 50pt;
+    }
+    p {
+      font-family: var(--font-texto);
+      font-size: 20pt;
+      line-height: 20px;
+      margin: 10px 0px;
+      text-align: justify;
+    }
+  }
+  img {
+    width: 800px;
+    height: 800px;
+  }
+}
+button {
+  padding: 20px;
+  font-size: 20pt;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  background-color: var(--cor-primaira);
+  font-family: var(--font-titulo);
+  transition: 0.3s ease-in-out;
+  margin-left:400px;
+}
+button:hover {
+  transform: scale(1.05);
+  cursor: pointer;
+}

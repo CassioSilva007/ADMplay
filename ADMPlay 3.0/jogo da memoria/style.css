@@ -1,0 +1,421 @@
+:root {
+    --primary-color: #4a90e2;
+    --secondary-color: #2c3e50;
+    --accent-color: #e79d3c;
+    --text-light: #ffffff;
+    --text-dark: #2c3e50;
+    --card-color: #ffffff;
+    --card-back: #34495e;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Press Start 2P', cursive;
+    background: linear-gradient(135deg, #00e1ff, #0a74d8, #ffd000);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    img{
+        border-radius: 50%;
+    }
+}
+/* Caixa de informações dos itens */
+.info-box {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.info-content {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    padding: 25px;
+    width: 80%;
+    max-width: 450px;
+    border-radius: 18px;
+    text-align: center;
+    color: white;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+    font-family: "Pragati Narrow", sans-serif;
+}
+
+#close-info {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: #e89d3c;
+    border: none;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: 'Press Start 2P';
+    box-shadow: 3px 3px 0 rgba(0,0,0,0.3);
+}
+
+#close-info:hover {
+    background: #ffb142;
+}
+
+.hidden {
+    display: none;
+}
+
+.container {
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    width: 100%;
+    margin-bottom: 100px; /* <<< adiciona espaço entre o jogo e o rodapé */
+}
+
+.game-header {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* centraliza título e estatísticas agora que a logo está fora */
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+h1 {
+    font-size: 1.8rem;
+    color: var(--text-light);
+    margin-bottom: 30px;
+    text-shadow: 4px 4px 0px rgba(0, 0, 0, 0.3);
+    line-height: 1.4;
+}
+
+.game-stats {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 15px;
+}
+
+.moves, .timer {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 15px 25px;
+    border-radius: 15px;
+    color: var(--text-light);
+    font-size: 0.8rem;
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.3);
+}
+
+.moves i, .timer i {
+    margin-right: 8px;
+}
+
+#game-board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin: 20px auto;
+    max-width: 600px;
+}
+
+.card {
+    aspect-ratio: 1;
+    background-color: var(--card-back);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.6s, box-shadow 0.3s;
+    transform-style: preserve-3d;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.card.flipped {
+    transform: rotateY(180deg);
+}
+
+.card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    transform: rotateY(180deg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.5rem;
+    background-color: var(--card-color);
+    border-radius: 10px;
+}
+
+.card-front {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    background-color: var(--card-back);
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.controls {
+    margin-top: 30px;
+    text-align: center;
+}
+
+#reset-btn, #play-again-btn {
+    background-color: var(--accent-color);
+    color: var(--text-light);
+    border: none;
+    padding: 15px 30px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    border-radius: 25px;
+    transition: transform 0.3s, background-color 0.3s;
+    box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.3);
+    font-family: 'Press Start 2P', cursive;
+}
+
+#reset-btn:hover, #play-again-btn:hover {
+    background-color: #3742e2;
+    transform: scale(1.05);
+}
+
+.win-message {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.win-content {
+    background-color: var(--card-color);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    animation: popup 0.5s ease-out;
+}
+
+.win-content h2 {
+    color: var(--text-dark);
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
+}
+
+.win-content p {
+    color: var(--text-dark);
+    font-size: 0.8rem;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.hidden {
+    display: none;
+}
+
+@keyframes popup {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    #game-board {
+        gap: 10px;
+    }
+
+    .game-stats {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+/* Logo */
+.logo {
+    width: 110px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 3px 3px 0px rgba(0,0,0,0.2);
+}
+
+.title-and-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+@media (max-width: 480px) {
+    .logo {
+        width: 80px;
+    }
+    .game-header {
+        justify-content: center;
+    }
+    .title-and-stats {
+        align-items: center;
+    }
+}
+
+/* Logo posicionada fora do jogo (sem fundo) */
+.logo-outside {
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    width: 120px;
+    height: auto;
+    background: transparent;
+    z-index: 1100;
+    pointer-events: none; /* evita que a logo interfira nos cliques do jogo */
+}
+
+@media (max-width: 480px) {
+    .logo-outside {
+        width: 90px;
+        top: 10px;
+        left: 10px;
+    }
+}
+
+
+footer {
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    padding: 20px 10px;
+    background: transparent; /* mantém o fundo transparente */
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    margin-top: 40px;
+}
+
+.title-footer {
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+.descricao-footer {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+/* Tela de introdução */
+.intro-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 10, 30, 0.95);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1200;
+    text-align: center;
+    font-family: 'Press Start 2P', cursive;
+    padding: 25px;
+}
+
+.intro-content {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 30px;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+}
+
+.intro-content h2 {
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    text-shadow: 3px 3px 0 rgba(0,0,0,0.3);
+    padding: 10px;
+}
+
+.intro-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin-bottom: 20px;
+    padding: 15px;
+}
+
+.intro-buttons button, #start-btn {
+    background-color: #e79d3c;
+    border: none;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: transform 0.3s, background-color 0.3s;
+    box-shadow: 3px 3px 0 rgba(0,0,0,0.3);
+    font-family: 'Press Start 2P', cursive;
+}
+
+.intro-buttons button:hover, #start-btn:hover {
+    background-color: #ffb347;
+    transform: scale(1.05);
+}
+
+.intro-info {
+    margin-top: 25px;
+    font-size: 0.8rem;
+    text-align: left;
+    background-color: rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.intro-info ul {
+    list-style: none;
+    padding: 0;
+}
+
+.intro-info li {
+    margin: 8px 0;
+}
+
+.hidden {
+    display: none;
+}
+

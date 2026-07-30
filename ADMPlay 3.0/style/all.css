@@ -1,0 +1,38 @@
+@import url("https://fonts.googleapis.com/css2?family=Jersey+20&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Pragati+Narrow:wght@400;700&display=swap');
+
+*,
+::before,
+::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-image: url(../img/fundo.jpg);
+  position: relative;
+}
+
+body::before {
+  content: "";
+  inset: 0;
+  background-color: #2600ffb0;
+  position: absolute;
+  z-index: -1;
+  width: 100%;
+  height: 100vh;
+}
+
+:root {
+  --font-titulo: "Jersey 20";
+  --font-texto: "Pragati Narrow";
+  --cor-primaira: #0D0059;
+  --cor-secundaria:#1D00BF;
+}

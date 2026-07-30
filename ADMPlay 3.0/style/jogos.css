@@ -1,0 +1,95 @@
+@import url("https://fonts.googleapis.com/css2?family=Jersey+20&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Pragati+Narrow:wght@400;700&display=swap");
+
+*,
+::before,
+::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  width: 100%;
+  height: 100vh;
+  overflow-x: hidden;
+  display: grid;
+  place-items: center;
+  background-image: url(../img/fundo.jpg);
+  position: relative;
+
+  h1 {
+    font-family: var(--font-titulo);
+    color: white;
+    font-size: 10rem;
+  }
+}
+
+body::before {
+  content: "";
+  inset: 0;
+  background-color: #2600ffb0;
+  position: absolute;
+  z-index: -1;
+  width: 100%;
+  height: 100vh;
+}
+
+:root {
+  --font-titulo: "Jersey 20";
+  --font-texto: "Pragati Narrow";
+  --cor-primaira: #2600ff;
+}
+
+div.escolher-ilha {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 70%;
+  margin: 0 auto;
+
+  div.ilha {
+    img {
+      width: 350px;
+      height: 250px;
+      box-shadow: 0px 0px 10px white;
+      border-radius: 10px;
+      margin: 0px 20px;
+    }
+
+    img#ilha:hover {
+      animation: rotate-90-cw 0.3s infinite alternate;
+    }
+
+
+
+    p {
+      font-size: 30pt;
+      font-family: var(--font-titulo);
+      text-align: center;
+
+      &:nth-child(1) {
+        color: white;
+        margin-bottom: 5px;
+      }
+    }
+  }
+
+}
+
+@keyframes rotate-90-cw {
+  0% {
+    -webkit-transform: rotate(0);
+    transform: rotate(0);
+  }
+
+  75% {
+    -webkit-transform: rotate(5deg);
+    transform: rotate(5deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(-5deg);
+    transform: rotate(-5deg);
+  }
+}

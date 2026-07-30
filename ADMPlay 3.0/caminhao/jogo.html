@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../style/style.css">
+    <title>Jogo do Caminhão</title>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Jersey+20&display=swap");
+
+        :root {
+            --font-titulo: "Jersey 20";
+            --cor-primaira: #2600ff;
+            --cor-secundaria: #1D00BF;
+        }
+
+        body {
+            background-color: #333;
+            display: grid;
+            place-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            color: #eee;
+            background-image: url(fundo.jpg);
+        }
+
+        #game-container {
+            position: relative;
+            width: 1200px;
+            height: 600px;
+            background-color: #353535;
+            border: 5px solid #555;
+            overflow: hidden;
+        }
+
+        #truck {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 120px;
+            height: 50px;
+            transition: left 0.1s linear, top 0.1s linear;
+            margin-left: 50px;
+        }
+
+        #truck img {
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            transform: rotate(90deg);
+            object-fit: cover;
+            background-color: rebeccapurpled;
+        }
+
+        .lines {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 225px;
+        }
+
+        #line {
+            background-color: yellow;
+            padding: 10px;
+            width: 100px;
+            height: 30px;
+            margin: 0 auto;
+        }
+
+        .obstacle {
+            position: absolute;
+            border-radius: 100%;
+            background-size: 100% 100%;
+            width: 90%;
+            height: 90%;
+            background-color: red;
+        }
+
+        .box {
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background-color: #ffff00;
+            border-radius: 50%;
+            border: 2px solid #9b9b00;
+        }
+
+        #score {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        #game-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2em;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 2px 2px 4px #000;
+            text-align: center;
+            z-index: 2;
+            backdrop-filter: blur(10px);
+            padding-top: 100px;
+            width: 100%;
+            height: 100%;
+        }
+
+        #restart-button {
+            position: absolute;
+            top: calc(75% + 50px);
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 10px 20px;
+            font-size: 2em;
+            cursor: pointer;
+            background-color: var(--cor-primaira);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+            z-index: 2;
+        }
+
+        #restart-button:hover {
+            background-color: var(--cor-secundaria);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        button#inicial {
+            padding: 20px;
+            text-align: center;
+            font-size: 20pt;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            background-color: var(--cor-primaira);
+            font-family: var(--font-titulo);
+            transition: 0.3s ease-in-out;
+            margin-top: 50px;
+        }
+
+        button#inicial:hover {
+            transform: scale(1.05);
+            cursor: pointer;
+        }
+
+        #mobile-controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            
+            /* Usaremos as dimensões e grid na Media Query, mas definimos o comportamento padrão */
+            display: none; /* Escondido em telas grandes */
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            margin-bottom: 20px; /* Adicionado margem inferior, embora 'position: fixed' possa anular isso */
+            z-index: 10;
+        }
+
+        .d-pad-btn {
+            background: var(--primary); /* Cor primária */
+            border: 2px solid #ecf0f1;
+            color: white;
+            font-size: 24px;
+            width: 60px; /* Novo tamanho */
+            height: 60px; /* Novo tamanho */
+            border-radius: 50%; /* Torna o botão circular */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
+            user-select: none;
+        }
+
+        .d-pad-btn:active {
+            background: var(--primary-light); /* Cor de clique */
+        }
+        /* ========================================================= */
+
+
+        /* ========================================================= */
+        /* 📱 RESPONSIVIDADE (MEDIA QUERY) */
+        /* ========================================================= */
+        @media (max-width: 768px) {
+            
+            #game-container {
+                width: 95vw;
+                height: 500px;
+            }
+
+            /* Novo ajuste para o grid do D-Pad em telas pequenas */
+            #mobile-controls {
+                display: grid; /* MOSTRA O D-PAD */
+                position: fixed; /* Fixa na tela */
+                bottom: 1px;
+                right: 270px;
+                /* O tamanho total do contêiner é determinado pelo tamanho dos botões (60px) e o gap (5px) */
+                width: calc(60px * 3 + 5px * 2); /* Largura total: 3 botões + 2 gaps */
+                height: calc(60px * 3 + 5px * 2); /* Altura total */
+            }
+
+            button#inicial {
+                margin-top: 150px;
+                margin-right: 425px;
+                padding: 20px;
+                font-size: 1.3rem;
+            }
+            button#inicial:hover{
+              transform: none;
+            }
+
+            #game-message {
+                font-size: 1.5em;
+            }
+            
+            /* Adicionei o posicionamento do grid que faltava no CSS anterior para funcionar corretamente com as novas dimensões*/
+            #mobile-controls > div:nth-child(1) { grid-area: 1 / 1 / 2 / 2; }
+            #btn-up { grid-area: 1 / 2 / 2 / 3; }
+            #mobile-controls > div:nth-child(3) { grid-area: 1 / 3 / 2 / 4; }
+            #btn-left { grid-area: 2 / 1 / 3 / 2; }
+            #mobile-controls > div:nth-child(5) { grid-area: 2 / 2 / 3 / 3; }
+            #btn-right { grid-area: 2 / 3 / 3 / 4; }
+            #mobile-controls > div:nth-child(7) { grid-area: 3 / 1 / 4 / 2; }
+            #btn-down { grid-area: 3 / 2 / 4 / 3; }
+            #mobile-controls > div:nth-child(9) { grid-area: 3 / 3 / 4 / 4; }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="game-container">
+        <div id="truck"><img src="caminhao.png" alt="Caminhão" /></div>
+        <div id="score">Moedas: 0/20</div>
+        <div id="game-message" class="hidden"></div>
+        <div class="lines">
+            <div id="line"></div>
+            <div id="line"></div>
+            <div id="line"></div>
+            <div id="line"></div>
+        </div>
+        <button id="restart-button" class="hidden">Reiniciar Jogo</button>
+    </div>
+    
+    <div id="mobile-controls">
+        <div></div> <button class="d-pad-btn" id="btn-up">▲</button>
+        <div></div>
+        <button class="d-pad-btn" id="btn-left">◀</button>
+        <div></div>
+        <button class="d-pad-btn" id="btn-right">▶</button>
+        <div></div>
+        <button class="d-pad-btn" id="btn-down">▼</button>
+        <div></div>
+    </div>
+    <a href="../html/jogos.html"><button id="inicial">Voltar para a tela inicial</button></a>
+    
+    <div vw class="enabled">
+        </div>
+
+    <div id="access-widget">
+        </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const truck = document.getElementById("truck");
+            const gameContainer = document.getElementById("game-container");
+            const scoreDisplay = document.getElementById("score");
+            const gameMessage = document.getElementById("game-message");
+            const restartButton = document.getElementById("restart-button");
+
+            // ... (variáveis de estado e constantes)
+            let truckX = 10;
+            let truckY = gameContainer.offsetHeight / 2 - truck.offsetHeight / 2;
+            let boxesCollected = 0;
+            let isGameRunning = true;
+            let itemGenerationInterval;
+
+            const truckSpeed = 400;
+            const itemSpeed = 200;
+            const items = [];
+            const maxBoxes = 20; // Corrigido para 20, conforme a pontuação
+
+            const obstacleImages = [
+                "carro1.png", "carro2.png", "carro3.png", 
+                "policia.png", "ambulância.png",
+            ];
+
+            let moveUp = false;
+            let moveDown = false;
+            let moveLeft = false; // Não usado no jogo de movimento vertical
+            let moveRight = false; // Não usado no jogo de movimento vertical
+            let lastTime = 0;
+
+            // ... (funções updateTruckPosition, createItem, moveItems, checkCollisions, gameLoop, startGame, endGame)
+
+            function updateTruckPosition(deltaTime) {
+                if (!isGameRunning) return;
+                const movement = truckSpeed * deltaTime;
+
+                if (moveUp) truckY = Math.max(0, truckY - movement);
+                if (moveDown)
+                    truckY = Math.min(
+                        gameContainer.offsetHeight - truck.offsetHeight,
+                        truckY + movement
+                    );
+                // Não adicionamos moveLeft/moveRight, pois o caminhão só se move verticalmente
+
+                truck.style.top = `${truckY}px`;
+            }
+
+            function createItem(type) {
+                // ... (seu código createItem)
+                const item = document.createElement("div");
+                item.classList.add(type);
+
+                if (type === "obstacle") {
+                    const OBSTACLE_HEIGHT = 95; // Ajustado para a altura do carro
+                    item.style.width = `135px`;
+                    item.style.height = `${OBSTACLE_HEIGHT}px`;
+
+                    item.style.top = `${Math.random() * (gameContainer.offsetHeight - OBSTACLE_HEIGHT)
+                        }px`;
+
+                    const randomIndex = Math.floor(
+                        Math.random() * obstacleImages.length
+                    );
+                    const randomImage = obstacleImages[randomIndex];
+                    item.style.backgroundImage = `url(${randomImage})`;
+                    item.style.backgroundRepeat = "no-repeat";
+                } else {
+                    item.style.width = "25px";
+                    item.style.height = "25px";
+                    item.style.top = `${Math.random() * (gameContainer.offsetHeight - 50)
+                        }px`; // Ajustado limite inferior
+                }
+
+                item.style.left = `${gameContainer.offsetWidth + 30}px`;
+                gameContainer.appendChild(item);
+                items.push(item);
+            }
+
+            function moveItems(deltaTime) {
+                if (!isGameRunning) return;
+                const movement = itemSpeed * deltaTime;
+                for (let i = 0; i < items.length; i++) {
+                    const item = items[i];
+                    let left = parseFloat(item.style.left);
+                    left -= movement;
+                    item.style.left = `${left}px`;
+
+                    if (left < -parseFloat(item.style.width)) {
+                        item.remove();
+                        items.splice(i, 1);
+                        i--;
+                    }
+                }
+            }
+
+            function checkCollisions() {
+                if (!isGameRunning) return;
+                const truckRect = truck.getBoundingClientRect();
+
+                for (let i = 0; i < items.length; i++) {
+                    const item = items[i];
+                    const itemRect = item.getBoundingClientRect();
+
+                    if (
+                        truckRect.left < itemRect.right &&
+                        truckRect.right > itemRect.left &&
+                        truckRect.top < itemRect.bottom &&
+                        truckRect.bottom > itemRect.top
+                    ) {
+                        if (item.classList.contains("obstacle")) {
+                            endGame("lose");
+                            return;
+                        } else if (item.classList.contains("box")) {
+                            boxesCollected += 1;
+                            scoreDisplay.textContent = `Moedas: ${boxesCollected}/20`;
+                            item.remove();
+                            items.splice(i, 1);
+                            i--;
+                            if (boxesCollected >= maxBoxes) {
+                                endGame("win");
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+
+            function gameLoop(timestamp) {
+                if (!isGameRunning) {
+                    lastTime = 0;
+                    return;
+                }
+                if (!lastTime) {
+                    lastTime = timestamp;
+                }
+                const deltaTime = (timestamp - lastTime) / 1000;
+                lastTime = timestamp;
+
+                updateTruckPosition(deltaTime);
+                moveItems(deltaTime);
+                checkCollisions();
+
+                requestAnimationFrame(gameLoop);
+            }
+
+            function startGame() {
+                isGameRunning = true;
+                boxesCollected = 0;
+                scoreDisplay.textContent = `Moedas: ${boxesCollected}/20`;
+                gameMessage.classList.add("hidden");
+                restartButton.classList.add("hidden");
+
+                items.forEach((item) => item.remove());
+                items.length = 0;
+
+                truckX = 10;
+                truckY = gameContainer.offsetHeight / 2 - truck.offsetHeight / 2;
+                truck.style.left = `${truckX}px`;
+                truck.style.top = `${truckY}px`;
+
+                clearInterval(itemGenerationInterval);
+                itemGenerationInterval = setInterval(() => {
+                    if (isGameRunning) {
+                        const itemType = Math.random() < 0.7 ? "obstacle" : "box";
+                        createItem(itemType);
+                    }
+                }, 700);
+
+                requestAnimationFrame(gameLoop);
+            }
+
+            function endGame(status) {
+                isGameRunning = false;
+                clearInterval(itemGenerationInterval);
+
+                if (status === "win") {
+                    gameMessage.textContent = "Você Venceu! Pegou as 20 moedas!🚛 Resumo: Relação com a AdministraçãoO Jogo do Caminhão simula a Gestão de Transportes e Riscos.Coletar Moedas(Produtividade): Representa atingir metas de entrega e eficiência na logística.Desviar de Carros(Gestão de Riscos): Representa a necessidade de evitar acidentes e interrupções operacionais(sinistros).A importância reside em desenvolver a capacidade de tomar decisões rápidas para equilibrar a busca por resultados com a segurança da operação.";
+                    gameMessage.style.color = "#FFFF00";
+                } else if (status === "lose") {
+                    gameMessage.textContent = "Game Over! Tente novamente.";
+                    gameMessage.style.color = "#e74c3c";
+                }
+                gameMessage.classList.remove("hidden");
+                restartButton.classList.remove("hidden");
+            }
+
+            // =========================================================
+            // 🚩 INTEGRAÇÃO DO D-PAD
+            // =========================================================
+
+            // Movimento por Teclado (Original)
+            document.addEventListener("keydown", (e) => {
+                if (!isGameRunning) return;
+                switch (e.key.toLowerCase()) {
+                    case "w":
+                    case "arrowup":
+                        moveUp = true;
+                        break;
+                    case "s":
+                    case "arrowdown":
+                        moveDown = true;
+                        break;
+                }
+            });
+
+            document.addEventListener("keyup", (e) => {
+                switch (e.key.toLowerCase()) {
+                    case "w":
+                    case "arrowup":
+                        moveUp = false;
+                        break;
+                    case "s":
+                    case "arrowdown":
+                        moveDown = false;
+                        break;
+                }
+            });
+
+            // Movimento por D-Pad (Toque/Clique)
+            const dPadButtons = document.querySelectorAll('.d-pad-btn');
+            
+            dPadButtons.forEach(btn => {
+                // Função para iniciar o movimento ao tocar/clicar
+                const startMovement = (e) => {
+                    e.preventDefault();
+                    if (!isGameRunning) return;
+                    
+                    if (btn.id === 'btn-up') {
+                        moveUp = true;
+                    } else if (btn.id === 'btn-down') {
+                        moveDown = true;
+                    }
+                    // Os botões left e right são ignorados, pois o jogo é vertical
+                };
+
+                // Função para parar o movimento ao soltar o toque/clique
+                const stopMovement = (e) => {
+                    e.preventDefault();
+                    if (btn.id === 'btn-up') {
+                        moveUp = false;
+                    } else if (btn.id === 'btn-down') {
+                        moveDown = false;
+                    }
+                };
+
+                // Eventos de Toque (para mobile)
+                btn.addEventListener('touchstart', startMovement);
+                btn.addEventListener('touchend', stopMovement);
+                
+                // Eventos de Mouse (para desktop)
+                btn.addEventListener('mousedown', startMovement);
+                btn.addEventListener('mouseup', stopMovement);
+                btn.addEventListener('mouseleave', stopMovement); // Para parar se o mouse sair do botão
+            });
+
+
+            // ... (event listeners do restartButton e a chamada startGame)
+
+            restartButton.addEventListener("click", () => {
+                startGame();
+            });
+
+            startGame();
+        });
+    </script>
+    <script src="../js/script.js"></script>
+</body>
+
+</html>
