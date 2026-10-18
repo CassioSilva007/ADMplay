@@ -88,10 +88,10 @@ Abaixo estão descritos os 7 jogos educativos disponíveis na plataforma, cada u
 ## 💪 Grupo
 
 ### Cassio Silva 
-- **LINKEDIN**: [https://www.linkedin.com/in/cassio-silva-846a8337b/](https://www.linkedin.com/in/cassio-silva-846a8337b/])
+- **LINKEDIN**: [https://www.linkedin.com/in/cassio-silva-846a8337b/](https://www.linkedin.com/in/cassio-silva-846a8337b/)
 ### Anthonio Cesar 
 - **LINKEDIN**: [https://www.linkedin.com/in/a-c-s-pereira07/](https://www.linkedin.com/in/a-c-s-pereira07/)
 ### Nycolas Nathan
-- **LINKEDIN**: [https://www.linkedin.com/in/nycolas-silva-68a4372ba/](https://www.linkedin.com/in/nycolas-silva-68a4372ba/)]
+- **LINKEDIN**: [https://www.linkedin.com/in/nycolas-silva-68a4372ba/](https://www.linkedin.com/in/nycolas-silva-68a4372ba/)
 ### Gabryel Moura
 - **LINKEDIN**: [https://www.linkedin.com/in/gabryel-moura-aa799a37b/](https://www.linkedin.com/in/gabryel-moura-aa799a37b/)
